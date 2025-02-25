@@ -2938,8 +2938,10 @@ class Axes(_AxesBase):
               (useful for stacked bars, i.e.,
               :doc:`/gallery/lines_bars_and_markers/bar_label_demo`)
 
-        padding : float, default: 0
-            Distance of label from the end of the bar, in points.
+        padding : float or array-like, default: 0
+            Distance of label from the end of the bar, in points. Also supports a
+            list of padding values of appropriate length to adjust the padding
+            for each element in the container.
 
         **kwargs
             Any remaining keyword arguments are passed through to
