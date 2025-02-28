@@ -2992,8 +2992,14 @@ class Axes(_AxesBase):
 
         if hasattr(padding, "__iter__") and len(padding) == len(bars):
             paddings = padding
+        elif hasattr(padding, "__iter__"):
+            raise ValueError(
+                f"Length of padding ({len(padding)}) does not match the number of bars ({len(bars)})"
+            )
         else:
             paddings = [padding] * len(bars)
+
+        print(paddings)
 
         for bar, err, dat, lbl, pad in itertools.zip_longest(
             bars, errs, datavalues, labels, paddings
