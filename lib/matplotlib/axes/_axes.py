@@ -2992,12 +2992,12 @@ class Axes(_AxesBase):
 
         if hasattr(padding, "__iter__") and len(padding) == len(bars):
             paddings = padding
-        elif hasattr(padding, "__iter__"):
+        elif hasattr(padding, "__iter__") and not len(padding) == 1:
             raise ValueError(
-                f"Length of padding ({len(padding)}) does not match the number of bars ({len(bars)})"
+                f"Padding list of length {len(padding)} does not match the number of bars ({len(bars)})"
             )
         else:
-            paddings = [padding] * len(bars)
+            paddings = np.array([padding] * len(bars)).squeeze()
 
         print(paddings)
 
