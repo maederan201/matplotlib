@@ -2117,6 +2117,9 @@ class RendererPdf(_backend_pdf_ps.RendererPDFPSBase):
                 gc, path_codes, offsets, offset_trans,
                 facecolors, edgecolors, linewidths, linestyles,
                 antialiaseds, urls, offset_position, hatchcolors=hatchcolors):
+            # This filters out any paths that are completely off the page
+            if xo < 0 or yo < 0 or xo > self.file.width * 72 or yo > self.file.height * 72:
+                continue
 
             self.check_gc(gc0, rgbFace)
             dx, dy = xo - lastx, yo - lasty
