@@ -428,7 +428,7 @@ class Collection(mcolorizer.ColorizingArtist):
             # introspectable, e.g. with inspect.signature, the only way is to try and
             # call this with the hatchcolors parameter.
             hatchcolors_arg_supported = True
-            try:
+            try:    
                 renderer.draw_path_collection(
                     gc, transform.frozen(), [],
                     self.get_transforms(), offsets, offset_trf,
@@ -482,9 +482,34 @@ class Collection(mcolorizer.ColorizingArtist):
                     "screen"]
 
             if hatchcolors_arg_supported:
+                #  Try filtering paths here
+                path_ids = renderer._iter_collection_raw_paths(transform.frozen(), paths,
+                    self.get_transforms())
+                
+                trnsfrms = self.get_transforms()
+                
+                mask = []
+                for xo, yo, path_id, gc0, rgbFace in renderer._iter_collection(
+                        gc, list(path_ids), offsets, offset_trf,
+                        self.get_facecolor(), self.get_edgecolor(), self._linewidths, self._linestyles,
+                        self._antialiaseds, self._urls, "screen", hatchcolors=self.get_hatchcolor()):
+
+                    if xo < 0 or yo < 0 or xo > renderer.width*72 or yo > renderer.height*72:
+                        mask.append(False)
+                    else:
+                        mask.append(True)
+
+                # Apply the mask to the args
+                for i, arg in enumerate(args):
+                    if isinstance(arg, np.ndarray) and len(arg) == len(mask):
+                        args[i] = arg[mask]
+
+
+
+
                 renderer.draw_path_collection(gc, transform.frozen(), paths,
                                               self.get_transforms(), *args,
-                                              hatchcolors=self.get_hatchcolor())
+                                              hatchcolors=self.get_hatchcolor()[mask])
             else:
                 if hatchcolors_not_needed:
                     renderer.draw_path_collection(gc, transform.frozen(), paths,
